@@ -23,7 +23,7 @@ import std.string : fromStringz, split, toStringz;
 // This value is automatically updated by 'make bump'.
 // The version number is used to find the correct shared library file.
 // We currently only support binding to an exact version of libyamlstar.
-enum yamlstarVersion = "0.1.18";
+enum yamlstarVersion = "0.1.19";
 
 // We currently only support platforms that GraalVM supports.
 // Windows uses an unversioned file name, matching the Python binding:
@@ -51,7 +51,7 @@ extern (C)
 {
   alias CreateIsolateFn = int function(void*, void**, void**);
   alias TearDownIsolateFn = int function(void*);
-  alias LoadYamlstarFn = char* function(void*, const(char)*);
+  alias LoadYamlstarFn = char* function(void*, const(char)*, const(char)*);
 }
 
 /// Exception thrown by the YAMLStar loader.
@@ -176,7 +176,7 @@ class YAMLStar
     error = JSONValue.init;
 
     // Call 'yamlstar_load' function in libyamlstar shared library:
-    auto respPtr = loadYamlstar(isolateThread, input.toStringz);
+    auto respPtr = loadYamlstar(isolateThread, input.toStringz, "{}");
     if (respPtr is null)
       throw new YAMLStarException("Null response from 'libyamlstar'");
 
